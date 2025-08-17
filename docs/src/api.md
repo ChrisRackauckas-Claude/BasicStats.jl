@@ -1,7 +1,7 @@
 # API Reference
 
 ```@meta
-CurrentModule = BasicStats
+CurrentModule = LightweightStats
 ```
 
 ## Central Tendency Functions

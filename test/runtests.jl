@@ -1,8 +1,13 @@
-using BasicStats
+using LightweightStats
 using Test
 using Random
 
-@testset "BasicStats.jl" begin
+# Import functions from LightweightStats for cleaner test code
+using LightweightStats: mean, median, std, var, cov, cor, quantile, middle
+
+@testset "LightweightStats.jl" begin
+    # Include regression tests against Statistics.jl
+    include("regression_tests.jl")
     @testset "mean" begin
         @test mean([1, 2, 3, 4, 5]) ≈ 3.0
         @test mean([1.5, 2.5, 3.5]) ≈ 2.5

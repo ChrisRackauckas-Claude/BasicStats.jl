@@ -1,14 +1,14 @@
-using BasicStats
+using LightweightStats
 using Documenter
 
-DocMeta.setdocmeta!(BasicStats, :DocTestSetup, :(using BasicStats); recursive=true)
+DocMeta.setdocmeta!(LightweightStats, :DocTestSetup, :(using LightweightStats); recursive=true)
 
 makedocs(;
-    modules=[BasicStats],
+    modules=[LightweightStats],
     authors="ChrisRackauckas <contact@chrisrackauckas.com>",
-    sitename="BasicStats.jl",
+    sitename="LightweightStats.jl",
     format=Documenter.HTML(;
-        canonical="https://SciML.github.io/BasicStats.jl",
+        canonical="https://SciML.github.io/LightweightStats.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/SciML/BasicStats.jl",
+    repo="github.com/SciML/LightweightStats.jl",
     devbranch="main",
 )

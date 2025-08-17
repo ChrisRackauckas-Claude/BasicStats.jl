@@ -1,23 +1,23 @@
-# BasicStats.jl
+# LightweightStats.jl
 
-[![Build Status](https://github.com/SciML/BasicStats.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/SciML/BasicStats.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/SciML/BasicStats.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/SciML/BasicStats.jl)
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SciML.github.io/BasicStats.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SciML.github.io/BasicStats.jl/dev/)
+[![Build Status](https://github.com/SciML/LightweightStats.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/SciML/LightweightStats.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/SciML/LightweightStats.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/SciML/LightweightStats.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SciML.github.io/LightweightStats.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SciML.github.io/LightweightStats.jl/dev/)
 
-A lightweight Julia package providing basic statistical functions with minimal dependencies. BasicStats.jl serves as a lower-dependency alternative to Statistics.jl, implementing the same algorithms but without pulling in additional dependencies.
+A lightweight Julia package providing basic statistical functions with minimal dependencies. LightweightStats.jl serves as a lower-dependency alternative to Statistics.jl, implementing the same algorithms but without pulling in additional dependencies.
 
 ## Installation
 
 ```julia
 using Pkg
-Pkg.add("BasicStats")
+Pkg.add("LightweightStats")
 ```
 
 ## Quick Start
 
 ```julia
-using BasicStats
+using LightweightStats
 
 # Basic statistics
 x = [1, 2, 3, 4, 5]
@@ -44,7 +44,7 @@ quantile(x, [0.25, 0.5, 0.75])  # [2.0, 3.0, 4.0]
 - **Type stable**: Maintains appropriate type stability
 - **Compatible API**: Matches Statistics.jl function signatures
 
-## Why BasicStats.jl?
+## Why LightweightStats.jl?
 
 This package is ideal when you need:
 - Basic statistical operations without heavyweight dependencies
@@ -54,7 +54,7 @@ This package is ideal when you need:
 
 ## Documentation
 
-For detailed documentation, see [https://SciML.github.io/BasicStats.jl/stable/](https://SciML.github.io/BasicStats.jl/stable/)
+For detailed documentation, see [https://SciML.github.io/LightweightStats.jl/stable/](https://SciML.github.io/LightweightStats.jl/stable/)
 
 ## Contributing
 
@@ -62,13 +62,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Citation
 
-If you use BasicStats.jl in your research, please cite:
+If you use LightweightStats.jl in your research, please cite:
 
 ```bibtex
-@software{BasicStats.jl,
+@software{LightweightStats.jl,
   author = {Rackauckas, Chris and contributors},
-  title = {BasicStats.jl: Lightweight Statistical Functions for Julia},
-  url = {https://github.com/SciML/BasicStats.jl},
+  title = {LightweightStats.jl: Lightweight Statistical Functions for Julia},
+  url = {https://github.com/SciML/LightweightStats.jl},
   year = {2024}
 }
 ```
