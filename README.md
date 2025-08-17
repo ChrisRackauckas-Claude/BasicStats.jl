@@ -1,9 +1,9 @@
 # BasicStats.jl
 
-[![Build Status](https://github.com/ChrisRackauckas-Claude/BasicStats.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ChrisRackauckas-Claude/BasicStats.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/ChrisRackauckas-Claude/BasicStats.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ChrisRackauckas-Claude/BasicStats.jl)
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://ChrisRackauckas-Claude.github.io/BasicStats.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ChrisRackauckas-Claude.github.io/BasicStats.jl/dev/)
+[![Build Status](https://github.com/SciML/BasicStats.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/SciML/BasicStats.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/SciML/BasicStats.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/SciML/BasicStats.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SciML.github.io/BasicStats.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SciML.github.io/BasicStats.jl/dev/)
 
 A lightweight Julia package providing basic statistical functions with minimal dependencies. BasicStats.jl serves as a lower-dependency alternative to Statistics.jl, implementing the same algorithms but without pulling in additional dependencies.
 
@@ -54,7 +54,7 @@ This package is ideal when you need:
 
 ## Documentation
 
-For detailed documentation, see [https://ChrisRackauckas-Claude.github.io/BasicStats.jl/stable/](https://ChrisRackauckas-Claude.github.io/BasicStats.jl/stable/)
+For detailed documentation, see [https://SciML.github.io/BasicStats.jl/stable/](https://SciML.github.io/BasicStats.jl/stable/)
 
 ## Contributing
 
@@ -68,7 +68,7 @@ If you use BasicStats.jl in your research, please cite:
 @software{BasicStats.jl,
   author = {Rackauckas, Chris and contributors},
   title = {BasicStats.jl: Lightweight Statistical Functions for Julia},
-  url = {https://github.com/ChrisRackauckas-Claude/BasicStats.jl},
+  url = {https://github.com/SciML/BasicStats.jl},
   year = {2024}
 }
 ```
