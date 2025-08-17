@@ -8,7 +8,7 @@ makedocs(;
     authors="ChrisRackauckas <contact@chrisrackauckas.com>",
     sitename="BasicStats.jl",
     format=Documenter.HTML(;
-        canonical="https://ChrisRackauckas-Claude.github.io/BasicStats.jl",
+        canonical="https://SciML.github.io/BasicStats.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/ChrisRackauckas-Claude/BasicStats.jl",
+    repo="github.com/SciML/BasicStats.jl",
     devbranch="main",
 )
