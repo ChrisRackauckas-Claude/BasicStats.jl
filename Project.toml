@@ -1,0 +1,14 @@
+name = "BasicStats"
+uuid = "6e4b0b68-1f2b-4a7e-8f0e-d3e9f3d5c8a1"
+authors = ["ChrisRackauckas <contact@chrisrackauckas.com>"]
+version = "0.1.0"
+
+[compat]
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[targets]
+test = ["Test", "Random"]
