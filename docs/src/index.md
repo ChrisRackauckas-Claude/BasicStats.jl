@@ -1,26 +1,26 @@
 ```@meta
-CurrentModule = BasicStats
+CurrentModule = LightweightStats
 ```
 
-# BasicStats.jl
+# LightweightStats.jl
 
 A lightweight Julia package providing basic statistical functions with minimal dependencies.
 
 ## Overview
 
-BasicStats.jl is designed as a lower-dependency alternative to Statistics.jl, providing essential statistical functions without pulling in additional dependencies. This makes it ideal for projects that need basic statistical operations but want to minimize their dependency footprint.
+LightweightStats.jl is designed as a lower-dependency alternative to Statistics.jl, providing essential statistical functions without pulling in additional dependencies. This makes it ideal for projects that need basic statistical operations but want to minimize their dependency footprint.
 
 ## Installation
 
 ```julia
 using Pkg
-Pkg.add("BasicStats")
+Pkg.add("LightweightStats")
 ```
 
 ## Quick Start
 
 ```julia
-using BasicStats
+using LightweightStats
 
 # Calculate mean
 x = [1, 2, 3, 4, 5]
@@ -72,7 +72,7 @@ cor(x, y)  # Returns 1.0 (perfect correlation)
 ## Example Usage
 
 ```julia
-using BasicStats
+using LightweightStats
 
 # Working with arrays
 data = randn(100)
@@ -96,7 +96,7 @@ println("Quartiles: ", q)
 
 ## Performance
 
-BasicStats.jl aims to provide efficient implementations while maintaining simplicity and readability. The implementations are based on the algorithms used in Statistics.jl but without the additional dependency overhead.
+LightweightStats.jl aims to provide efficient implementations while maintaining simplicity and readability. The implementations are based on the algorithms used in Statistics.jl but without the additional dependency overhead.
 
 ## Contributing
 

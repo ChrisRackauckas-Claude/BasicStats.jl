@@ -1,4 +1,4 @@
-module BasicStats
+module LightweightStats
 
 export mean, median, std, var, cov, cor, quantile, middle
 
@@ -39,7 +39,7 @@ function var(A::AbstractArray; corrected::Bool = true, mean = nothing, dims = :)
     if dims === (:)
         n = length(A)
         isempty(A) && return oftype(real(zero(eltype(A)))/1, NaN)
-        m = mean === nothing ? BasicStats.mean(A) : mean
+        m = mean === nothing ? LightweightStats.mean(A) : mean
         s = sum(x -> abs2(x - m), A)
         return corrected ? s / (n - 1) : s / n
     else

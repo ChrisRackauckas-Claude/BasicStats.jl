@@ -1,5 +1,5 @@
 [deps]
-BasicStats = "6e4b0b68-1f2b-4a7e-8f0e-d3e9f3d5c8a1"
+LightweightStats = "6e4b0b68-1f2b-4a7e-8f0e-d3e9f3d5c8a1"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 
 [compat]
