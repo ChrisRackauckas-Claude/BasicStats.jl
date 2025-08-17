@@ -52,6 +52,28 @@ This package is ideal when you need:
 - Reduced dependency tree for deployment
 - Core statistical functions in resource-constrained environments
 
+## Why Does Statistics.jl Have a LinearAlgebra Dependency?
+
+Statistics.jl requires LinearAlgebra.jl for specific mathematical operations in covariance and correlation computations. Here's exactly where and why:
+
+### Complex Number Support
+Statistics.jl uses [`conj()`](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L502) from LinearAlgebra to handle complex conjugates in covariance calculations:
+- **Line 501-502**: [`_conj()` wrapper function](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L501-L502) that returns `conj(x)` for complex arrays
+- **Line 592**: [Documentation](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L592) explains the formula uses complex conjugate: `(x_i - mean(x)) * conj(y_i - mean(y))`
+
+### Matrix Operations
+LinearAlgebra provides optimized matrix operations used in multivariate statistics:
+- **Line 520**: [`unscaled_covzm`](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L520) uses `x'x` (adjoint multiplication) for covariance matrices
+- **Line 525**: [`adjoint()`](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L525) for matrix-vector products
+- **Line 528**: [`transpose()`](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L528) for real matrix operations
+- **Line 532**: [Mixed operations](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L532) combining `transpose()` and `adjoint()`
+- **Line 626**: [Hermitian symmetry](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L626) enforcement with `adjoint()`
+
+### Import Statement
+- **Line 10**: [`using LinearAlgebra, SparseArrays`](https://github.com/JuliaLang/Statistics.jl/blob/master/src/Statistics.jl#L10) imports the required functions
+
+Without LinearAlgebra, Statistics.jl would need to reimplement these mathematical operations, duplicating code and potentially losing performance optimizations. LightweightStats.jl avoids this dependency by implementing these operations directly, trading some performance and complex number support for zero dependencies.
+
 ## Documentation
 
 For detailed documentation, see [https://SciML.github.io/LightweightStats.jl/stable/](https://SciML.github.io/LightweightStats.jl/stable/)
