@@ -40,6 +40,7 @@ quantile(x, [0.25, 0.5, 0.75])  # [2.0, 3.0, 4.0]
 
 - **Zero dependencies**: Only requires Julia standard library
 - **Essential functions**: mean, median, std, var, cov, cor, quantile, middle
+- **Complex number support**: Full support for complex-valued statistics
 - **Dimension-aware**: Most functions support operations along specific dimensions
 - **Type stable**: Maintains appropriate type stability
 - **Compatible API**: Matches Statistics.jl function signatures
@@ -72,35 +73,44 @@ LinearAlgebra provides optimized matrix operations used in multivariate statisti
 ### Import Statement
 - **Line 10**: [`using LinearAlgebra, SparseArrays`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L10) imports the required functions
 
-## How LightweightStats.jl Handles These Operations Differently
+## How LightweightStats.jl Handles These Operations Without LinearAlgebra
 
-LightweightStats.jl avoids the LinearAlgebra dependency by making specific implementation choices:
+LightweightStats.jl avoids the LinearAlgebra dependency by implementing its own minimal versions of required functions:
 
-### 1. Real Numbers Only
-- **No complex conjugate support**: LightweightStats.jl's [`cov()` function](src/LightweightStats.jl#L55-L65) uses simple multiplication `(x[i] - xmean) * (y[i] - ymean)` without conjugation
-- This means it doesn't correctly handle complex-valued data, but avoids needing `conj()`
+### 1. Custom Complex Conjugate Implementation
+- **Internal `_conj()` function**: LightweightStats.jl implements its own [conjugate function](src/LightweightStats.jl#L6-L9):
+  ```julia
+  _conj(x::Real) = x
+  _conj(x::Complex) = Complex(real(x), -imag(x))
+  _conj(x::AbstractArray{<:Real}) = x
+  _conj(x::AbstractArray{<:Complex}) = _conj.(x)
+  ```
+- This provides full complex number support without requiring LinearAlgebra
 
 ### 2. Explicit Loops Instead of Matrix Operations
-- **Manual iteration**: Instead of using optimized matrix products like `x'x`, LightweightStats.jl uses [explicit loops](src/LightweightStats.jl#L79-L84):
+- **Manual iteration**: Instead of using optimized matrix products like `x'x`, LightweightStats.jl uses [explicit loops](src/LightweightStats.jl#L86-L93):
   ```julia
   for i in 1:p
       for j in i:p
-          s = sum((X[k, i] - means[i]) * (X[k, j] - means[j]) for k in 1:n)
-          C[i, j] = C[j, i] = corrected ? s / (n - 1) : s / n
+          s = sum((X[k, i] - means[i]) * _conj(X[k, j] - means[j]) for k in 1:n)
+          C[i, j] = corrected ? s / (n - 1) : s / n
+          if i != j
+              C[j, i] = _conj(C[i, j])
+          end
       end
   end
   ```
 - This avoids needing `adjoint()` and `transpose()` but may be slower for large matrices
 
-### 3. Simplified Type Handling
-- Statistics.jl uses specialized methods for different array types and complex numbers
-- LightweightStats.jl treats all inputs as real, simplifying the implementation but limiting functionality
+### 3. Direct Implementation vs Library Reuse
+- Statistics.jl leverages LinearAlgebra's optimized implementations
+- LightweightStats.jl reimplements just the minimal required functionality
 
 ### Trade-offs
-- **Pros**: Zero dependencies, faster load time, simpler deployment
-- **Cons**: No complex number support, potentially slower for large matrices, less optimized for special matrix types
+- **Pros**: Zero dependencies, faster load time, simpler deployment, full complex number support
+- **Cons**: Potentially slower for large matrices, less optimized for special matrix types, duplicates some stdlib functionality
 
-Without LinearAlgebra, Statistics.jl would need to reimplement these mathematical operations, duplicating code and potentially losing performance optimizations. LightweightStats.jl makes the pragmatic choice to support only real-valued statistics in exchange for eliminating dependencies.
+By implementing its own `_conj()` function, LightweightStats.jl achieves complete feature parity with Statistics.jl for basic statistical operations while maintaining zero dependencies.
 
 ## Documentation
 

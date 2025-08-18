@@ -31,6 +31,12 @@ module LightweightStats
 
 export mean, median, std, var, cov, cor, quantile, middle
 
+# Internal implementation of complex conjugate to avoid LinearAlgebra dependency
+_conj(x::Real) = x
+_conj(x::Complex) = Complex(real(x), -imag(x))
+_conj(x::AbstractArray{<:Real}) = x
+_conj(x::AbstractArray{<:Complex}) = _conj.(x)
+
 """
     mean(A::AbstractArray; dims=:)
 
@@ -110,15 +116,17 @@ function mean(f, A::AbstractArray)
 end
 
 """
-    median(v::AbstractVector)
+    median(v::Vector)
 
 Compute the median of vector `v`.
 
 The median is the middle value when the data is sorted. For even-length vectors,
 returns the average of the two middle values.
 
+Note: This function only works with concrete `Vector` types due to scalar indexing.
+
 # Arguments
-- `v::AbstractVector`: Input vector
+- `v::Vector`: Input vector
 
 # Returns
 - The median value
@@ -140,9 +148,10 @@ julia> median([3, 1, 2])
 # Errors
 Throws `ArgumentError` if vector is empty.
 """
-function median(v::AbstractVector)
+# Restricted to Vector due to scalar indexing
+function median(v::Vector)
     isempty(v) && throw(ArgumentError("median of empty collection undefined"))
-    sorted = sort(vec(v))
+    sorted = sort(v)
     n = length(sorted)
     if isodd(n)
         return sorted[(n + 1) ÷ 2]
@@ -152,12 +161,14 @@ function median(v::AbstractVector)
 end
 
 """
-    median(A::AbstractArray; dims=:)
+    median(A::Array; dims=:)
 
 Compute the median of array `A`, optionally along specified dimensions.
 
+Note: This function only works with concrete `Array` types due to scalar indexing.
+
 # Arguments
-- `A::AbstractArray`: Input array
+- `A::Array`: Input array
 - `dims=:`: Dimensions along which to compute median
   - `:` (default) computes median of entire array
   - Integer or tuple specifies dimensions
@@ -188,7 +199,7 @@ julia> median(A; dims=2)
  5
 ```
 """
-function median(A::AbstractArray; dims = :)
+function median(A::Array; dims = :)
     if dims === (:)
         return median(vec(A))
     else
@@ -300,6 +311,8 @@ end
 
 Compute the covariance between vectors `x` and `y`.
 
+Supports complex numbers through internal conjugation.
+
 # Arguments
 - `x::AbstractVector`: First vector
 - `y::AbstractVector`: Second vector  
@@ -334,7 +347,8 @@ function cov(x::AbstractVector, y::AbstractVector; corrected::Bool = true)
     xmean = mean(x)
     ymean = mean(y)
 
-    s = sum((x[i] - xmean) * (y[i] - ymean) for i in 1:n)
+    # Use broadcasting instead of scalar indexing
+    s = sum((x .- xmean) .* _conj(y .- ymean))
     return corrected ? s / (n - 1) : s / n
 end
 
@@ -408,12 +422,19 @@ function cov(X::AbstractMatrix; dims::Int = 1, corrected::Bool = true)
         n == 0 && return fill(oftype(real(zero(eltype(X)))/1, NaN), p, p)
 
         means = vec(mean(X; dims = 1))
-        C = zeros(promote_type(Float64, eltype(X)), p, p)
+        C = zeros(promote_type(Float64, real(eltype(X))), p, p)
+        
+        # Center the data once using broadcasting
+        X_centered = X .- means'
 
         for i in 1:p
             for j in i:p
-                s = sum((X[k, i] - means[i]) * (X[k, j] - means[j]) for k in 1:n)
-                C[i, j] = C[j, i] = corrected ? s / (n - 1) : s / n
+                # Use views and broadcasting for column operations
+                s = sum(view(X_centered, :, i) .* _conj(view(X_centered, :, j)))
+                C[i, j] = corrected ? s / (n - 1) : s / n
+                if i != j
+                    C[j, i] = _conj(C[i, j])
+                end
             end
         end
         return C
@@ -422,12 +443,19 @@ function cov(X::AbstractMatrix; dims::Int = 1, corrected::Bool = true)
         n == 0 && return fill(oftype(real(zero(eltype(X)))/1, NaN), p, p)
 
         means = vec(mean(X; dims = 2))
-        C = zeros(promote_type(Float64, eltype(X)), p, p)
+        C = zeros(promote_type(Float64, real(eltype(X))), p, p)
+        
+        # Center the data once using broadcasting
+        X_centered = X .- means
 
         for i in 1:p
             for j in i:p
-                s = sum((X[i, k] - means[i]) * (X[j, k] - means[j]) for k in 1:n)
-                C[i, j] = C[j, i] = corrected ? s / (n - 1) : s / n
+                # Use views and broadcasting for row operations
+                s = sum(view(X_centered, i, :) .* _conj(view(X_centered, j, :)))
+                C[i, j] = corrected ? s / (n - 1) : s / n
+                if i != j
+                    C[j, i] = _conj(C[i, j])
+                end
             end
         end
         return C
@@ -532,31 +560,30 @@ function cor(X::AbstractMatrix; dims::Int = 1)
         s = vec(std(X; dims = 2, corrected = false))
     end
 
-    n = length(s)
+    # Use broadcasting to compute correlation matrix
+    # Create outer product of standard deviations
+    s_outer = s * s'
+    
+    # Handle zero variance cases with broadcasting
     R = similar(C)
-
-    for i in 1:n
-        for j in 1:n
-            if s[i] == 0 || s[j] == 0
-                R[i, j] = oftype(real(zero(eltype(X)))/1, NaN)
-            else
-                R[i, j] = C[i, j] / (s[i] * s[j])
-            end
-        end
-    end
+    zero_mask = (s_outer .== 0)
+    R[zero_mask] .= oftype(real(zero(eltype(X)))/1, NaN)
+    R[.!zero_mask] = C[.!zero_mask] ./ s_outer[.!zero_mask]
 
     return R
 end
 
 """
-    quantile(v::AbstractVector, p::Real)
+    quantile(v::Vector, p::Real)
 
 Compute the `p`-th quantile of vector `v`.
 
 Uses linear interpolation between sorted values for non-exact quantile positions.
 
+Note: This function only works with concrete `Vector` types due to scalar indexing.
+
 # Arguments
-- `v::AbstractVector`: Input vector
+- `v::Vector`: Input vector
 - `p::Real`: Quantile value in range [0, 1]
 
 # Returns
@@ -588,11 +615,12 @@ julia> quantile(v, 1.0)  # Maximum
 - Throws `ArgumentError` if `p` is not in [0, 1]
 - Throws `ArgumentError` if vector is empty
 """
-function quantile(v::AbstractVector, p::Real)
+# Restricted to Vector due to scalar indexing
+function quantile(v::Vector, p::Real)
     0 <= p <= 1 || throw(ArgumentError("quantile requires 0 <= p <= 1"))
     isempty(v) && throw(ArgumentError("quantile of empty collection undefined"))
 
-    sorted = sort(vec(v))
+    sorted = sort(v)
     n = length(sorted)
 
     if p == 0
@@ -611,12 +639,14 @@ function quantile(v::AbstractVector, p::Real)
 end
 
 """
-    quantile(v::AbstractVector, p::AbstractVector)
+    quantile(v::Vector, p::AbstractVector)
 
 Compute multiple quantiles of vector `v`.
 
+Note: This function only works with concrete `Vector` types due to scalar indexing.
+
 # Arguments
-- `v::AbstractVector`: Input vector
+- `v::Vector`: Input vector
 - `p::AbstractVector`: Vector of quantile values in range [0, 1]
 
 # Returns
@@ -643,7 +673,7 @@ julia> quantile(v, 0:0.25:1)  # All quartiles including extremes
  5
 ```
 """
-function quantile(v::AbstractVector, p::AbstractVector)
+function quantile(v::Vector, p::AbstractVector)
     return [quantile(v, pi) for pi in p]
 end
 
