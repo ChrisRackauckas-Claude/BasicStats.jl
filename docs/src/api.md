@@ -4,6 +4,12 @@
 CurrentModule = LightweightStats
 ```
 
+## Module
+
+```@docs
+LightweightStats
+```
+
 ## Central Tendency Functions
 
 ```@docs
