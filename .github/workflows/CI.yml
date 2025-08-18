@@ -69,6 +69,6 @@ jobs:
         shell: julia --project=docs --color=yes {0}
         run: |
           using Documenter: DocMeta, doctest
-          using BasicStats
-          DocMeta.setdocmeta!(BasicStats, :DocTestSetup, :(using BasicStats); recursive=true)
-          doctest(BasicStats)
+          using LightweightStats
+          DocMeta.setdocmeta!(LightweightStats, :DocTestSetup, :(using LightweightStats); recursive=true)
+          doctest(LightweightStats)
