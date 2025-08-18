@@ -23,7 +23,7 @@ using Random
         [1 2 3; 4 5 6],
         randn(10, 5),
         randn(Float32, 8, 3),
-        reshape(1:24, 4, 6),
+        collect(reshape(1:24, 4, 6)),  # Convert to concrete Array
         ones(3, 3),
         [1;;],  # 1x1 matrix
     ]
