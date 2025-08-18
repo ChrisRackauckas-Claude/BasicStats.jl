@@ -57,20 +57,20 @@ This package is ideal when you need:
 Statistics.jl requires LinearAlgebra.jl for specific mathematical operations in covariance and correlation computations. Here's exactly where and why:
 
 ### Complex Number Support
-Statistics.jl uses [`conj()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L502) from LinearAlgebra to handle complex conjugates in covariance calculations:
-- **Line 501-502**: [`_conj()` wrapper function](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L501-L502) that returns `conj(x)` for complex arrays
-- **Line 592**: [Documentation](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L592) explains the formula uses complex conjugate: `(x_i - mean(x)) * conj(y_i - mean(y))`
+Statistics.jl uses [`conj()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L502) from LinearAlgebra to handle complex conjugates in covariance calculations:
+- **Line 501-502**: [`_conj()` wrapper function](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L501-L502) that returns `conj(x)` for complex arrays
+- **Line 592**: [Documentation](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L592) explains the formula uses complex conjugate: `(x_i - mean(x)) * conj(y_i - mean(y))`
 
 ### Matrix Operations
 LinearAlgebra provides optimized matrix operations used in multivariate statistics:
-- **Line 520**: [`unscaled_covzm`](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L520) uses `x'x` (adjoint multiplication) for covariance matrices
-- **Line 525**: [`adjoint()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L525) for matrix-vector products
-- **Line 528**: [`transpose()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L528) for real matrix operations
-- **Line 532**: [Mixed operations](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L532) combining `transpose()` and `adjoint()`
-- **Line 626**: [Hermitian symmetry](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L626) enforcement with `adjoint()`
+- **Line 520**: [`unscaled_covzm`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L520) uses `x'x` (adjoint multiplication) for covariance matrices
+- **Line 525**: [`adjoint()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L525) for matrix-vector products
+- **Line 528**: [`transpose()`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L528) for real matrix operations
+- **Line 532**: [Mixed operations](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L532) combining `transpose()` and `adjoint()`
+- **Line 626**: [Hermitian symmetry](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L626) enforcement with `adjoint()`
 
 ### Import Statement
-- **Line 10**: [`using LinearAlgebra, SparseArrays`](https://github.com/JuliaLang/Statistics.jl/blob/v1.8.0/src/Statistics.jl#L10) imports the required functions
+- **Line 10**: [`using LinearAlgebra, SparseArrays`](https://github.com/JuliaLang/Statistics.jl/blob/v1.11.1/src/Statistics.jl#L10) imports the required functions
 
 ## How LightweightStats.jl Handles These Operations Differently
 
